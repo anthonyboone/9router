@@ -1,3 +1,8 @@
+# Unreleased
+
+## Fixes
+- Gemini CLI: reuse stored OAuth project IDs for quota checks and show clearer setup guidance when the project is missing (#1271)
+
 # v0.4.59 (2026-05-21)
 
 ## Fixes
