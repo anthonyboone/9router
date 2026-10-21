@@ -93,6 +93,31 @@ describe("resolveClineModels free-tier merge", () => {
   });
 });
 
+describe("resolveClinepassModels clinePass feed tier", () => {
+  it("lists the feed's clinePass[] models that /api/v1/models omits", async () => {
+    const { resolveClinepassModels } = await import("../../open-sse/services/clinepassModels.js");
+    const result = await resolveClinepassModels({ apiKey: "test-key" });
+    expect(result.models.map((m) => m.id)).toEqual(["cline-pass/glm-5.3"]);
+  });
+
+  it("does not pull the free tier or the general catalog into the ClinePass list", async () => {
+    const { resolveClinepassModels } = await import("../../open-sse/services/clinepassModels.js");
+    const ids = (await resolveClinepassModels({ apiKey: "test-key" })).models.map((m) => m.id);
+    expect(ids.every((id) => id.startsWith("cline-pass/"))).toBe(true);
+  });
+
+  it("still returns the feed tier when the /models catalog fails", async () => {
+    fetchMock.mockImplementation(async (url) => {
+      if (String(url) === MODELS_URL) return { ok: false, status: 500, json: async () => ({}) };
+      if (String(url) === FEED_URL) return jsonResponse(FEED_RESPONSE);
+      throw new Error("unexpected fetch: " + url);
+    });
+    const { resolveClinepassModels } = await import("../../open-sse/services/clinepassModels.js");
+    const result = await resolveClinepassModels({ apiKey: "test-key" });
+    expect(result.models.map((m) => m.id)).toEqual(["cline-pass/glm-5.3"]);
+  });
+});
+
 describe("cline-free namespace pricing", () => {
   it("bills cline-free/* at zero", async () => {
     const { getPricingForModel } = await import("../../open-sse/providers/pricing.js");
