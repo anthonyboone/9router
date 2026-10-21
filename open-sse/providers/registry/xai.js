@@ -26,14 +26,20 @@ export default {
     tokenUrl: "https://auth.x.ai/oauth2/token",
     refreshUrl: "https://auth.x.ai/oauth2/token",
   },
+  // grok-4(-0709), grok-4-fast-*, grok-code-fast-1 and grok-3 were retired on
+  // 2026-05-15 and now silently redirect to grok-4.3 / grok-build-0.1, so they are
+  // not listed. https://docs.x.ai/developers/migration/may-15-retirement
   models: [
+    { id: "grok-4.7", name: "Grok 4.7" },
     { id: "grok-4.6", name: "Grok 4.6" },
     { id: "grok-4.5", name: "Grok 4.5" },
-    { id: "grok-4", name: "Grok 4" },
-    { id: "grok-4-fast-reasoning", name: "Grok 4 Fast Reasoning" },
-    { id: "grok-code-fast-1", name: "Grok Code Fast" },
-    { id: "grok-3", name: "Grok 3" },
-    { id: "grok-2-image-1212", name: "Grok 2 Image", params: ["n","response_format"], kind: "image" },
+    { id: "grok-4.3", name: "Grok 4.3" },
+    { id: "grok-4.20-0309-reasoning", name: "Grok 4.20 Reasoning" },
+    { id: "grok-4.20-0309-non-reasoning", name: "Grok 4.20 Non-Reasoning" },
+    { id: "grok-build-0.1", name: "Grok Build 0.1" },
+    { id: "grok-imagine-image", name: "Grok Imagine Image", params: ["n","response_format"], kind: "image" },
+    { id: "grok-imagine-video-1.5", name: "Grok Imagine Video 1.5", params: ["duration","aspect_ratio","resolution"], kind: "video" },
+    { id: "grok-imagine-video-1.5-lite", name: "Grok Imagine Video 1.5 Lite", params: ["duration","aspect_ratio","resolution"], kind: "video" },
     { id: "grok-imagine-video", name: "Grok Imagine Video", params: ["duration","aspect_ratio","resolution"], kind: "video" },
   ],
   serviceKinds: ["llm","imageToText","webSearch","image","video"],

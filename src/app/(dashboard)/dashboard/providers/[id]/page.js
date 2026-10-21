@@ -665,6 +665,13 @@ export default function ProviderDetailPage() {
         alert(data.error || translate("Failed to fetch models"));
         return;
       }
+      // A warning means the live catalog failed and this is the static fallback —
+      // already listed, and copying it into custom models would outlive the next
+      // registry update as stale entries.
+      if (data.warning) {
+        alert(data.warning);
+        return;
+      }
       const models = data.models || [];
       if (models.length === 0) {
         alert(translate("No models returned"));
