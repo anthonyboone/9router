@@ -29,6 +29,7 @@ export default {
   // grok-4(-0709), grok-4-fast-*, grok-code-fast-1 and grok-3 were retired on
   // 2026-05-15 and now silently redirect to grok-4.3 / grok-build-0.1, so they are
   // not listed. https://docs.x.ai/developers/migration/may-15-retirement
+  // grok-build-0.1 is gone from the catalog; grok-build-latest now aliases grok-4.5.
   models: [
     { id: "grok-4.7", name: "Grok 4.7" },
     { id: "grok-4.6", name: "Grok 4.6" },
@@ -36,7 +37,7 @@ export default {
     { id: "grok-4.3", name: "Grok 4.3" },
     { id: "grok-4.20-0309-reasoning", name: "Grok 4.20 Reasoning" },
     { id: "grok-4.20-0309-non-reasoning", name: "Grok 4.20 Non-Reasoning" },
-    { id: "grok-build-0.1", name: "Grok Build 0.1" },
+    { id: "grok-imagine-image-2.0", name: "Grok Imagine Image 2.0", params: ["n","response_format"], kind: "image" },
     { id: "grok-imagine-image", name: "Grok Imagine Image", params: ["n","response_format"], kind: "image" },
     { id: "grok-imagine-video-1.5", name: "Grok Imagine Video 1.5", params: ["duration","aspect_ratio","resolution"], kind: "video" },
     { id: "grok-imagine-video-1.5-lite", name: "Grok Imagine Video 1.5 Lite", params: ["duration","aspect_ratio","resolution"], kind: "video" },

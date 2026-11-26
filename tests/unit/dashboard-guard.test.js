@@ -277,6 +277,26 @@ describe("dashboard guard local-only access", () => {
     expect(response.status).toBe(403);
   });
 
+  it("rejects Command Code auto-import from a remote host even when requireLogin=false", async () => {
+    // The route returns the raw API key read from the server's ~/.commandcode/auth.json.
+    mocks.getSettings.mockResolvedValue({ requireLogin: false });
+
+    const response = await proxy(request("/api/oauth/commandcode/auto-import", {
+      host: "router.example.com",
+    }));
+
+    expect(response.status).toBe(403);
+  });
+
+  it("allows Command Code auto-import on loopback with a valid CLI token", async () => {
+    const response = await proxy(localRequest("/api/oauth/commandcode/auto-import", {
+      host: "localhost:20128",
+      "x-9r-cli-token": "cli-token",
+    }));
+
+    expect(response).toBe(mocks.nextResponse);
+  });
+
   it("allows local-only route with valid CLI token", async () => {
     const response = await proxy(request("/api/mcp/filesystem/sse", {
       host: "router.example.com",
