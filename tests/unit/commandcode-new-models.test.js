@@ -12,9 +12,9 @@ const GEMINI_4_CARBON = "google/gemini-4-carbon";
 const CLAUDE_FABLE_5_2 = "claude-fable-5-2";
 
 describe("Command Code new models: google/gemini-4-carbon and claude-fable-5-2", () => {
-  // Fork: the commandcode list mirrors the Go ($1) plan, which excludes Gemini and
-  // Claude models; passthroughModels still forwards them for higher plans.
-  it("stay out of the Go-plan list but remain reachable through passthrough", async () => {
+  // Fork: the commandcode list mirrors the GOAT plan, which excludes these two
+  // models; passthroughModels still forwards them for higher plans.
+  it("stay out of the GOAT-plan list but remain reachable through passthrough", async () => {
     const models = getModelsByProviderId("commandcode");
     expect(models.some((model) => model.id === GEMINI_4_CARBON)).toBe(false);
     expect(models.some((model) => model.id === CLAUDE_FABLE_5_2)).toBe(false);

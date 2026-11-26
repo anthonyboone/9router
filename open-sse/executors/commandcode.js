@@ -1,5 +1,6 @@
 import { BaseExecutor } from "./base.js";
 import { PROVIDERS } from "../config/providers.js";
+import { getModelsByProviderId } from "../config/providerModels.js";
 import { buildCommandCodeHeaders } from "../shared/commandCodeHeaders.js";
 import { commandCodeToOpenAIResponse } from "../translator/response/commandcode-to-openai.js";
 import { SSE_DONE } from "../utils/sseConstants.js";
@@ -16,6 +17,20 @@ import { SSE_DONE } from "../utils/sseConstants.js";
  * both the streaming and non-streaming (forced SSE → JSON) downstream handlers in
  * 9router can consume it without further format translation.
  */
+/**
+ * Command Code model ids are case-sensitive ("moonshotai/Kimi-K3"); a different
+ * spelling is rejected as "Model/provider not recognized: anthropic:<id>". Restore
+ * the catalog casing when an id differs only by case; ids outside the catalog
+ * (passthroughModels) are sent untouched.
+ */
+export function canonicalCommandCodeModel(model) {
+  if (typeof model !== "string") return model;
+  const models = getModelsByProviderId("commandcode");
+  if (models.some((m) => m.id === model)) return model;
+  const lower = model.toLowerCase();
+  return models.find((m) => m.id.toLowerCase() === lower)?.id || model;
+}
+
 export class CommandCodeExecutor extends BaseExecutor {
   constructor() {
     super("commandcode", PROVIDERS.commandcode);
@@ -23,6 +38,7 @@ export class CommandCodeExecutor extends BaseExecutor {
 
   transformRequest(model, body, stream, credentials) {
     if (!body || typeof body !== "object") return body || {};
+    if (body.params?.model) body.params.model = canonicalCommandCodeModel(body.params.model);
     if (body.params) {
       body.params.stream = true;
     } else {
