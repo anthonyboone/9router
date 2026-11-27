@@ -3,6 +3,7 @@ import {
   parseCommandCodeError,
   inspectAndWrapCommandCodeResponse,
   CommandCodeExecutor,
+  canonicalCommandCodeModel,
 } from "../../open-sse/executors/commandcode.js";
 import { handleComboChat } from "../../open-sse/services/combo.js";
 
@@ -17,6 +18,25 @@ function createNdjsonStream(lines) {
     },
   });
 }
+
+describe("canonicalCommandCodeModel", () => {
+  it("restores the catalog casing for an id that differs only by case", () => {
+    expect(canonicalCommandCodeModel("moonshotai/kimi-k3")).toBe("moonshotai/Kimi-K3");
+    expect(canonicalCommandCodeModel("QWEN/QWEN3.7-PLUS")).toBe("Qwen/Qwen3.7-Plus");
+  });
+
+  it("leaves exact catalog ids and unlisted passthrough ids untouched", () => {
+    expect(canonicalCommandCodeModel("moonshotai/Kimi-K3")).toBe("moonshotai/Kimi-K3");
+    expect(canonicalCommandCodeModel("claude-opus-5-5")).toBe("claude-opus-5-5");
+  });
+
+  it("rewrites params.model in the outgoing request body", () => {
+    const body = { threadId: "t", params: { model: "moonshotai/kimi-k3", messages: [] } };
+    const out = new CommandCodeExecutor().transformRequest("moonshotai/kimi-k3", body, true, {});
+    expect(out.params.model).toBe("moonshotai/Kimi-K3");
+    expect(out.params.stream).toBe(true);
+  });
+});
 
 describe("parseCommandCodeError", () => {
   it("parses user exact error payload with statusCode 503 and isRetryable", () => {
